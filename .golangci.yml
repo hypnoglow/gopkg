@@ -1,0 +1,77 @@
+# yaml-language-server: $schema=https://golangci-lint.run/jsonschema/golangci.jsonschema.json
+#
+# Reference: https://golangci-lint.run/docs/configuration/file/
+
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - asciicheck
+    - bodyclose
+    - copyloopvar
+    - dogsled
+    - errcheck
+    - errchkjson
+    - funcorder
+    - goconst
+    - gocritic
+    - gocyclo
+    - godot
+    - gomoddirectives
+    - goprintffuncname
+    - gosec
+    - govet
+    - ineffassign
+    - mirror
+    - misspell
+    - nakedret
+    - noctx
+    - nolintlint
+    - prealloc
+    - revive
+    - staticcheck
+    - unconvert
+    - unparam
+    - unused
+    - usestdlibvars
+    - whitespace
+
+  settings:
+    gomoddirectives:
+      toolchain-forbidden: true
+    nolintlint:
+      require-specific: true
+      require-explanation: true
+
+  exclusions:
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      # Relax requirements for tests.
+      - linters:
+          - revive
+        text: "context-as-argument"
+        path: _test.go
+
+formatters:
+  enable:
+    - gci
+    - gofmt
+
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/hypnoglow/gopkg)
+
+issues:
+  fix: true
+
+run:
+  timeout: 5m
+  build-tags: []

@@ -1,0 +1,90 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+#
+# Reference: https://taskfile.dev/docs/reference/schema
+
+version: "3"
+
+vars:
+  MODULES:
+    - sqliteconn
+
+tasks:
+  default:
+    desc: "Run default fast pipeline to test and build (all modules)"
+    cmds:
+      - task: mod
+      - task: test
+      - task: lint
+
+  mod:
+    desc: "Install dependencies (all modules)"
+    run: once
+    cmds:
+      - for:
+          var: MODULES
+          as: MODULE
+        task: mod:module
+        vars:
+          MODULE: "{{ .MODULE }}"
+
+  test:
+    desc: "Run unit tests (all modules)"
+    run: once
+    deps:
+      - mod
+    cmds:
+      - for:
+          var: MODULES
+          as: MODULE
+        task: test:module
+        vars:
+          MODULE: "{{ .MODULE }}"
+
+  lint:
+    desc: "Run linter (all modules)"
+    run: once
+    deps:
+      - mod
+    cmds:
+      - for:
+          var: MODULES
+          as: MODULE
+        task: lint:module
+        vars:
+          MODULE: "{{ .MODULE }}"
+
+  mod:module:
+    internal: true
+    requires:
+      vars: [MODULE]
+    label: "mod:{{ .MODULE }}"
+    dir: "{{ .MODULE }}"
+    cmds:
+      - go mod tidy
+
+  test:module:
+    internal: true
+    requires:
+      vars: [MODULE]
+    label: "test:{{ .MODULE }}"
+    dir: "{{ .MODULE }}"
+    cmds:
+      - go test ./... {{ .CLI_ARGS }}
+
+  lint:module:
+    internal: true
+    requires:
+      vars: [MODULE]
+    label: "lint:{{ .MODULE }}"
+    dir: "{{ .MODULE }}"
+    cmds:
+      - golangci-lint run {{ .CLI_ARGS }}
+
+  doc:
+    desc: "Start godoc server and open the package index in the browser (Ctrl+C to stop)"
+    dir: sqliteconn
+    vars:
+      GODOC_PORT: "6060"
+    cmds:
+      - (sleep 1 && open "http://localhost:6060/pkg/github.com/hypnoglow/gopkg/sqliteconn/") &
+      - godoc -http=:{{.GODOC_PORT}}
