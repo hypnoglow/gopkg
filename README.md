@@ -8,7 +8,7 @@ what you actually use.
 
 | Module | Import path | Description |
 |--------|-------------|-------------|
-| [sqliteconn](./sqliteconn) | `github.com/hypnoglow/gopkg/sqliteconn` | SQLite connection pool management (WAL, separate read/write pools) |
+| [sqliteconn](https://pkg.go.dev/github.com/hypnoglow/gopkg/sqliteconn) | `github.com/hypnoglow/gopkg/sqliteconn` | SQLite connection pool management (WAL, separate read/write pools) |
 
 ## Development
 
